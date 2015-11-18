@@ -1,0 +1,26 @@
+LIBNAME A BASE "C:\Public\Banamex";
+
+proc sql;
+create table CARTERA1P AS
+select 
+P.programa_nombre_nafin,
+p.cve_programa,
+P.fecha_colocacion_inicio AS fecha_colocación LABEL='Fecha colocación',
+P.monto_max_programa LABEL='Monto máximo programa ($ MDP)',
+sum(p.monto_max_programa) as Total_MontoMax,
+P.participacion_pocentaje AS participacion_porcentaje  LABEL='Porcentaje de cobertura',
+1 as lineas_registradas label='Líneas registradas ($ MDP)',
+sum(lineas_registradas) as Total_LineasReg,
+(monto_max_programa)*(participacion_pocentaje) as Recursos_asignados,
+sum(Recursos_asignados) as Total_RecAsig,
+(1/monto_max_programa) as Avance_registro label='%Avance registro',
+'$' AS NOCADUCA LABEL='ENR EOP Garantía disponible ($ MDP)',
+sum(NOCADUCA) as Total_NOCADUCA,
+'$' AS CADUCA LABEL='ENR EOP Garantía caduca ($ MDP)',
+sum(CADUCA) as Total_CADUCA,
+(NOCADUCA)+ (CADUCA) AS ENR_EOP LABEL='ENR EOP ($ MDP)',
+sum(ENR_EOP) as Total_ENR
+Monto_disponible_NAFIN AS Monto_GarVigente LABEL='Monto garantizado ENR EOP Vigente ($ MDP)',
+sum(Monto_GarVigente) as Total_Monto_GarVigente
+from A.BMX_PROGRAMA P;
+quit;
